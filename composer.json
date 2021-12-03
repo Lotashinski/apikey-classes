@@ -1,0 +1,30 @@
+{
+  "name": "lotashinski/apikey-security-classes",
+  "description": "",
+  "type": "library",
+  "homepage": "https://github.com/Lotashinski/saml-apikey-classes",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Yanka Kupala State University of Grodno",
+      "email": "soft@grsu.by"
+    },
+    {
+      "name": "Alexander Lotashinsky",
+      "email": "allotashinsky@yandex.by",
+      "role": "developer"
+    }
+  ],
+  "require": {
+    "php": ">=8.0.2",
+    "symfony/security-bundle": "6.0.*",
+    "symfony/yaml": "6.0.*",
+    "psr/log": "^1.0.1 || 2.* || 3.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Grsu\\ApiKeySecurity\\": "src/"
+    }
+  }
+}
