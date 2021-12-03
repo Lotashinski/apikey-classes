@@ -72,7 +72,7 @@ security:
   
   # ...
   access_control:
-    - { path: ^/admin, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/api/int, roles: IS_AUTHENTICATED_FULLY }
 ```
 
 ## Example
