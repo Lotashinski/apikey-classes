@@ -65,7 +65,7 @@ security:
   firewalls:
     # ...
     api_key:
-      pattern: ^/api/rest  
+      pattern: ^/api/int  
       lazy: true
       provider: api_key_user_provider
       custom_authenticator: Grsu\ApiKeySecurity\ApiKeyAuthentication
@@ -91,7 +91,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 class UserController extends AbstractController
 {
 
-    #[Route('/api/rest/user/me', name: 'api_user_info', methods:['GET'])]
+    #[Route('/api/int/users/me', name: 'api_user_info', methods:['GET'])]
     public function index(NormalizerInterface $normalizer): Response
     {
         $user = $this->getUser();
@@ -106,6 +106,6 @@ class UserController extends AbstractController
 
 ```
 
-For request use ```X-AUTH-KEY``` with ```api_key``` from ```api_users.yaml```.
+For request use ```X-AUTH-KEY``` header with ```api_key``` from ```api_users.yaml```.
 
 ![img.png](img.png)
