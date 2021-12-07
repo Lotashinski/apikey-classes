@@ -13,6 +13,10 @@ class ApiKeyUser
     private array $roles = [];
     private string $identifier;
 
+    /**
+     * @var string[]|null
+     */
+    private ?array $allowIps;
 
     public function getRoles(): array
     {
@@ -41,6 +45,16 @@ class ApiKeyUser
     {
         $this->identifier = $identifier;
         return $this;
+    }
+
+    public function getAllowIps(): ?array
+    {
+        return $this->allowIps;
+    }
+
+    public function setAllowIps(?array $allowIps): void
+    {
+        $this->allowIps = $allowIps;
     }
 
 }

@@ -22,10 +22,13 @@ users:
   - user_name: api_admin
     roles: [ 'ROLE_USER', 'ROLE_ADMIN' ]
     api_key: qwerty123
+    ips:
+      - 127.0.0.1
 
   - user_name: api_user
     roles: [ 'ROLE_USER' ]
     api_key: bbb123
+    # if the directive 'ips' is not specified, then it is available from any
 ```
 
 ### 2. Configure dependency injection

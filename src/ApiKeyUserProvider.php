@@ -33,7 +33,7 @@ class ApiKeyUserProvider
     public function refreshUser(UserInterface $user): UserInterface
     {
         if (!$user instanceof ApiKeyUser) {
-            throw new UnsupportedUserException("Expected " . ApiKeyUser::class . ", but received " . $user::class);
+            throw new UnsupportedUserException('Expected ' . ApiKeyUser::class . ', but received ' . $user::class);
         }
         return $user;
     }
@@ -48,7 +48,7 @@ class ApiKeyUserProvider
 
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
-        $this->logger->debug("Find user by identified: $identifier");
+        $this->logger->debug('Find user by identified:' . $identifier);
         return $this->loadUser($identifier);
     }
 
@@ -61,23 +61,33 @@ class ApiKeyUserProvider
 
         foreach ($users as $fileUser) {
             if ($fileUser['api_key'] === $apikey) {
-                $user = new ApiKeyUser();
-                $user->setRoles($fileUser['roles'])
-                    ->setIdentifier($fileUser['user_name']);
-                return $user;
+                return $this->configureUser($fileUser);
             }
         }
 
-        throw new UserNotFoundException("User not found in user storage");
+        throw new UserNotFoundException('User not found in user storage');
     }
 
     private function getUsersArray(): array
     {
         if ($this->apiUsers === null) {
-            $this->logger->debug("Load users from $this->pathToUsers");
+            $this->logger->debug('Load users from ' . $this->pathToUsers);
             $this->apiUsers = Yaml::parseFile($this->pathToUsers);
         }
         return $this->apiUsers['users'];
+    }
+
+    private function configureUser(array $userData): ApiKeyUser
+    {
+        $user = new ApiKeyUser();
+        $user->setRoles($userData['roles'])
+            ->setIdentifier($userData['user_name']);
+
+        if (isset($userData['ips'])) {
+            $user->setAllowIps($userData['ips']);
+        }
+
+        return $user;
     }
 
 }
