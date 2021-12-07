@@ -16,7 +16,7 @@ class ApiKeyUser
     /**
      * @var string[]|null
      */
-    private ?array $allowIps;
+    private ?array $allowIps = null;
 
     public function getRoles(): array
     {
