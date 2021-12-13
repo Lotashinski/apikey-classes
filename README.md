@@ -39,6 +39,9 @@ users:
 services:
 
   Grsu\ApiKeySecurity\ApiKeyAuthentication:
+    # arguments:
+    #   $strictVerification: true # if it is necessary to check each request
+    #   $header: X-AUTH-KEY       # if you need to change secure header
     # for create logger tag
     tags:
       - { name: monolog.logger, channel: ApiKeyAuthenticator }
