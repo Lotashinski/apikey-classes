@@ -6,6 +6,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
@@ -35,9 +36,11 @@ class ApiKeyAuthentication
 
     public function supports(Request $request): ?bool
     {
+
         $isSupport = $this->strictVerification || $request->headers->has($this->header);
 
         $this->logger->debug('Check request Authenticator support', [
+            'isSupport' => $isSupport,
             'headers-key' => $request->headers->get($this->header),
         ]);
 
@@ -46,7 +49,7 @@ class ApiKeyAuthentication
 
     public function authenticate(Request $request): Passport
     {
-        $userBadge = new UserBadge($request->headers->get($this->header));
+        $userBadge = new UserBadge($request->headers->get($this->header) ?? '');
 
         $credentialChecker = new CustomCredentials(
             function (?string $ip, ApiKeyUser $user) {
@@ -67,7 +70,7 @@ class ApiKeyAuthentication
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        return null;
+        throw new AccessDeniedException();
     }
 
 }
