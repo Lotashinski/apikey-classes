@@ -18,6 +18,7 @@ class ApiKeyUser implements UserInterface
      */
     private ?array $allowIps = null;
 
+
     public function getRoles(): array
     {
         return $this->roles;

@@ -28,7 +28,9 @@ class ApiKeyUserProvider implements UserProviderInterface
     public function refreshUser(UserInterface $user): UserInterface
     {
         if (!$user instanceof ApiKeyUser) {
-            throw new UnsupportedUserException('Expected ' . ApiKeyUser::class . ', but received ' . $user::class);
+            throw new UnsupportedUserException(
+                'Expected ' . ApiKeyUser::class . ', but received ' . $user::class
+            );
         }
         return $user;
     }
@@ -55,7 +57,9 @@ class ApiKeyUserProvider implements UserProviderInterface
         $users = $this->getUsersArray();
 
         foreach ($users as $fileUser) {
-            if ($fileUser['api_key'] === $apikey) {
+            $userFormFileApiKey = $fileUser['api_key']
+                ?? throw new \ParseError('User directive \'api_key\' not found in users config');
+            if ($apikey === $userFormFileApiKey) {
                 return $this->configureUser($fileUser);
             }
         }
@@ -65,7 +69,7 @@ class ApiKeyUserProvider implements UserProviderInterface
 
     private function getUsersArray(): array
     {
-        if ($this->apiUsers === null) {
+        if (null === $this->apiUsers) {
             $this->logger->debug('Load users from config file', ['file' => $this->pathToUsersConfig]);
             $this->apiUsers = Yaml::parseFile($this->pathToUsersConfig);
         }
@@ -75,13 +79,10 @@ class ApiKeyUserProvider implements UserProviderInterface
     private function configureUser(array $userData): ApiKeyUser
     {
         $user = new ApiKeyUser();
-        $user->setRoles($userData['roles'])
-            ->setIdentifier($userData['user_name']);
+        $user->setRoles($userData['roles'] ?? throw new \ParseError('User directive \'roles\' not found in users config'))
+            ->setIdentifier($userData['user_name'] ?? throw new \ParseError('User directive \'user_name\' not found in users config'));
 
-        if (isset($userData['ips'])) {
-            $user->setAllowIps($userData['ips']);
-        }
-
+        $user->setAllowIps($userData['ips'] ?? null);
         return $user;
     }
 
