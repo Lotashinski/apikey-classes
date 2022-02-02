@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Grsu\ApiKeySecurity;
 
@@ -9,22 +10,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Yaml\Yaml;
 
-
-class ApiKeyUserProvider
-    implements UserProviderInterface
+class ApiKeyUserProvider implements UserProviderInterface
 {
-    private LoggerInterface $logger;
     private ?array $apiUsers = null;
-    private string $pathToUsers;
 
 
     public function __construct(
-        LoggerInterface $logger,
-        string          $pathToUsersConfig
+        private LoggerInterface $logger,
+        private string          $pathToUsersConfig
     )
     {
-        $this->logger = $logger;
-        $this->pathToUsers = $pathToUsersConfig;
     }
 
     /**
@@ -71,8 +66,8 @@ class ApiKeyUserProvider
     private function getUsersArray(): array
     {
         if ($this->apiUsers === null) {
-            $this->logger->debug('Load users from ' . $this->pathToUsers);
-            $this->apiUsers = Yaml::parseFile($this->pathToUsers);
+            $this->logger->debug('Load users from config file', ['file' => $this->pathToUsersConfig]);
+            $this->apiUsers = Yaml::parseFile($this->pathToUsersConfig);
         }
         return $this->apiUsers['users'];
     }

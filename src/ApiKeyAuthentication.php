@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Grsu\ApiKeySecurity;
 
@@ -13,24 +14,15 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
-
-class ApiKeyAuthentication
-    extends AbstractAuthenticator
+class ApiKeyAuthentication extends AbstractAuthenticator
 {
 
-    private LoggerInterface $logger;
-    private bool $strictVerification;
-    private string $header;
-
     public function __construct(
-        LoggerInterface $logger,
-        string          $header = 'X-AUTH-KEY',
-        bool            $strictVerification = false
+        private LoggerInterface $logger,
+        private string          $header = 'X-AUTH-KEY',
+        private bool            $strictVerification = true
     )
     {
-        $this->logger = $logger;
-        $this->header = $header;
-        $this->strictVerification = $strictVerification;
     }
 
 
@@ -70,7 +62,6 @@ class ApiKeyAuthentication
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        throw new AccessDeniedException();
+        throw new AccessDeniedException("Authentication Failure.");
     }
-
 }

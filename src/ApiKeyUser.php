@@ -1,11 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Grsu\ApiKeySecurity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class ApiKeyUser
-    implements UserInterface
+class ApiKeyUser implements UserInterface
 {
     /**
      * @var string[]
@@ -56,5 +56,4 @@ class ApiKeyUser
     {
         $this->allowIps = $allowIps;
     }
-
 }
