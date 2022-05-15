@@ -10,14 +10,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Yaml\Yaml;
 
-class ApiKeyUserProvider implements UserProviderInterface
+final class ApiKeyUserProvider implements UserProviderInterface
 {
     private ?array $apiUsers = null;
 
 
     public function __construct(
-        private LoggerInterface $logger,
-        private string          $pathToUsersConfig
+        private readonly LoggerInterface $logger,
+        private readonly string          $pathToUsersConfig
     )
     {
     }

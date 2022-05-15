@@ -5,7 +5,7 @@ namespace Grsu\ApiKeySecurity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class ApiKeyUser implements UserInterface
+final class ApiKeyUser implements UserInterface
 {
     /**
      * @var string[]

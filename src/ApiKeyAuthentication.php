@@ -14,13 +14,13 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
-class ApiKeyAuthentication extends AbstractAuthenticator
+final class ApiKeyAuthentication extends AbstractAuthenticator
 {
 
     public function __construct(
-        private LoggerInterface $logger,
-        private string          $header = 'X-AUTH-KEY',
-        private bool            $strictVerification = true
+        private readonly LoggerInterface $logger,
+        private readonly string          $header = 'X-AUTH-KEY',
+        private readonly bool            $strictVerification = true
     )
     {
     }
@@ -28,7 +28,6 @@ class ApiKeyAuthentication extends AbstractAuthenticator
 
     public function supports(Request $request): ?bool
     {
-
         $isSupport = $this->strictVerification || $request->headers->has($this->header);
 
         $this->logger->debug('Check request Authenticator support', [
@@ -45,9 +44,15 @@ class ApiKeyAuthentication extends AbstractAuthenticator
 
         $credentialChecker = new CustomCredentials(
             function (?string $ip, ApiKeyUser $user) {
-                if ($user->getAllowIps() === null)
+                if ($user->getAllowIps() === null) {
                     return true;
-                return $ip !== null && in_array($ip, $user->getAllowIps());
+                }
+                $isIpAllow = $this->checkIp($user, $ip);
+                $this->logger->alert('User found but ip address not resolved.', [
+                    'api_user' => $user,
+                    'request_ip' => $ip,
+                ]);
+                return $isIpAllow;
             },
             $request->getClientIp()
         );
@@ -63,5 +68,11 @@ class ApiKeyAuthentication extends AbstractAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         throw new AccessDeniedException("Authentication Failure.");
+    }
+
+
+    private function checkIp(ApiKeyUser $user, ?string $ip): bool
+    {
+        return $ip !== null && in_array($ip, $user->getAllowIps());
     }
 }
