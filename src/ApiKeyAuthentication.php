@@ -48,10 +48,12 @@ final class ApiKeyAuthentication extends AbstractAuthenticator
                     return true;
                 }
                 $isIpAllow = $this->checkIp($user, $ip);
-                $this->logger->alert('User found but ip address not resolved.', [
-                    'api_user' => $user,
-                    'request_ip' => $ip,
-                ]);
+                if (!$isIpAllow) {
+                    $this->logger->alert('User found but ip address not resolved.', [
+                        'api_user' => $user,
+                        'request_ip' => $ip,
+                    ]);
+                }
                 return $isIpAllow;
             },
             $request->getClientIp()
